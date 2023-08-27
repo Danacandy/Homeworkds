@@ -1,0 +1,44 @@
+-- Create Users table
+CREATE TABLE Users (
+    user_id INT PRIMARY KEY,
+    user_type VARCHAR(20) NOT NULL,
+    username VARCHAR(50) NOT NULL,
+    email VARCHAR(100) NOT NULL,
+    password VARCHAR(100) NOT NULL
+);
+
+-- Create Rooms table
+CREATE TABLE Rooms (
+    room_id INT PRIMARY KEY,
+    host_id INT NOT NULL,
+    name VARCHAR(100) NOT NULL,
+    description TEXT,
+    capacity INT,
+    price DECIMAL(10, 2),
+    ac_available BOOLEAN,
+    refrigerator_available BOOLEAN,
+    FOREIGN KEY (host_id) REFERENCES Users (user_id)
+);
+
+-- Create Reservations table
+CREATE TABLE Reservations (
+    reservation_id INT PRIMARY KEY,
+    guest_id INT NOT NULL,
+    room_id INT NOT NULL,
+    check_in_date DATE NOT NULL,
+    check_out_date DATE NOT NULL,
+    total_cost DECIMAL(10, 2),
+    FOREIGN KEY (guest_id) REFERENCES Users (user_id),
+    FOREIGN KEY (room_id) REFERENCES Rooms (room_id)
+);
+
+-- Create Reviews table
+CREATE TABLE Reviews (
+    review_id INT PRIMARY KEY,
+    guest_id INT NOT NULL,
+    room_id INT NOT NULL,
+    rating INT,
+    comment TEXT,
+    FOREIGN KEY (guest_id) REFERENCES Users (user_id),
+    FOREIGN KEY (room_id) REFERENCES Rooms (room_id)
+);
