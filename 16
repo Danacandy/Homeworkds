@@ -1,4 +1,4 @@
--- Create Users table
+
 CREATE TABLE Users (
     user_id INT PRIMARY KEY,
     user_type VARCHAR(20) NOT NULL,
@@ -7,7 +7,7 @@ CREATE TABLE Users (
     password VARCHAR(100) NOT NULL
 );
 
--- Create Rooms table
+
 CREATE TABLE Rooms (
     room_id INT PRIMARY KEY,
     host_id INT NOT NULL,
@@ -20,7 +20,7 @@ CREATE TABLE Rooms (
     FOREIGN KEY (host_id) REFERENCES Users (user_id)
 );
 
--- Create Reservations table
+
 CREATE TABLE Reservations (
     reservation_id INT PRIMARY KEY,
     guest_id INT NOT NULL,
@@ -32,7 +32,6 @@ CREATE TABLE Reservations (
     FOREIGN KEY (room_id) REFERENCES Rooms (room_id)
 );
 
--- Create Reviews table
 CREATE TABLE Reviews (
     review_id INT PRIMARY KEY,
     guest_id INT NOT NULL,
