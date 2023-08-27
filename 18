@@ -1,0 +1,22 @@
+import unittest
+from unittest.mock import patch
+from bank import Bank
+
+class TestBank(unittest.TestCase):
+
+    def test_open_account(self):
+        bank = Bank()
+        account = bank.open_account('John Doe', 1000)
+        self.assertEqual(account.owner, 'John Doe')
+        self.assertEqual(account.balance, 1000)
+
+    @patch('builtins.print')  
+    def test_update(self, mock_print):
+        bank = Bank()
+        account = bank.open_account('Alice', 2000)
+        account.update()
+        self.assertTrue(account.balance > 2000)
+        mock_print.assert_called_once() 
+
+if __name__ == '__main__':
+    unittest.main()
