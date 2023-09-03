@@ -41,3 +41,76 @@ CREATE TABLE Reviews (
     FOREIGN KEY (guest_id) REFERENCES Users (user_id),
     FOREIGN KEY (room_id) REFERENCES Rooms (room_id)
 );
+
+
+INSERT INTO Users (user_id, username, email, registration_date)
+VALUES
+    (1, 'user1', 'user1@example.com', '2023-01-15'),
+    (2, 'user2', 'user2@example.com', '2023-02-20'),
+    (3, 'user3', 'user3@example.com', '2023-03-25');
+
+
+INSERT INTO Hosts (host_id, host_name, host_email, registration_date)
+VALUES
+    (1, 'host1', 'host1@example.com', '2023-01-05'),
+    (2, 'host2', 'host2@example.com', '2023-02-10'),
+    (3, 'host3', 'host3@example.com', '2023-03-15');
+
+
+INSERT INTO Listings (listing_id, title, description, host_id, price, listing_date)
+VALUES
+    (101, 'Cozy Apartment', 'A comfortable place to stay.', 1, 80.00, '2023-01-20'),
+    (102, 'Beachfront Villa', 'Enjoy the ocean view.', 2, 200.00, '2023-02-25'),
+    (103, 'City Center Loft', 'Great location in the heart of the city.', 3, 120.00, '2023-03-30');
+
+
+INSERT INTO Reservations (reservation_id, user_id, listing_id, check_in_date, check_out_date, total_price)
+VALUES
+    (1001, 1, 101, '2023-02-10', '2023-02-15', 320.00),
+    (1002, 2, 102, '2023-03-05', '2023-03-10', 1000.00),
+    (1003, 3, 103, '2023-04-10', '2023-04-15', 600.00);
+
+
+INSERT INTO Ratings (rating_id, user_id, listing_id, rating)
+VALUES
+    (2001, 1, 101, 4.5),
+    (2002, 2, 102, 5.0),
+    (2003, 3, 103, 4.8);
+
+
+SELECT u.username, u.user_id
+FROM Users u
+JOIN (
+    SELECT user_id, COUNT(*) AS reservation_count
+    FROM Reservations
+    GROUP BY user_id
+    ORDER BY reservation_count DESC
+    LIMIT 1
+)  ON u.user_id = r.user_id;
+
+SELECT h.host_name, h.host_id
+FROM Hosts h
+JOIN (
+    SELECT l.host_id, SUM(r.total_price) AS earnings
+    FROM Listings l
+    JOIN Reservations r ON l.listing_id = r.listing_id
+    WHERE DATE_PART('month', r.check_in_date) = DATE_PART('month', CURRENT_DATE - INTERVAL '1 month')
+    GROUP BY l.host_id
+    ORDER BY earnings DESC
+    LIMIT 1
+) e ON h.host_id = e.host_id;
+
+
+SELECT h.host_name, h.host_id
+FROM Hosts h
+JOIN (
+    SELECT l.host_id, AVG(r.rating) AS avg_rating
+    FROM Listings l
+    JOIN Ratings r ON l.listing_id = r.listing_id
+    GROUP BY l.host_id
+    ORDER BY avg_rating DESC
+    LIMIT 1
+) a ON h.host_id = a.host_id;
+
+
+
